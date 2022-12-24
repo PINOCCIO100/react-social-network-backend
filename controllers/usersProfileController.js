@@ -1,13 +1,11 @@
-import path from 'path';
-import { readFileSync } from 'fs';
-
-const __dirname = path.resolve();
+const path = require('path');
+const { readFileSync } = require('fs');
 
 const getUsersProfileInfo = () => {
-  return JSON.parse(readFileSync(path.resolve(__dirname, 'models', 'usersProfileInfo.json')));
+  return JSON.parse(readFileSync(path.resolve('models', 'usersProfileInfo.json')));
 }
 
-export const getUsersList = (req, res) => {
+exports.getUsersList = (req, res) => {
   const usersProfileInfoParsed = getUsersProfileInfo();
   const totalCount = usersProfileInfoParsed.length
   const page = req.query.page;
@@ -18,7 +16,7 @@ export const getUsersList = (req, res) => {
   });
 };
 
-export const getUserProfile = (req, res) => {
+exports.getUserProfile = (req, res) => {
   const { userID } = req.params;
   const usersProfileInfoParsed = getUsersProfileInfo();
   res.json(usersProfileInfoParsed.find(p => p.id == userID));

@@ -1,16 +1,14 @@
-import express from "express";
+const express = require('express');
+const { cors } = require('./middlewares/CORS.js');
+const { logger } = require('./middlewares/logger.js');
+const { debugMW } = require('./middlewares/debugMW.js');
+const { usersAvatarsChecker } = require("./middlewares/usersAvatarsChecker.js");
+const { usersProfileRoute } = require('./routes/usersProfileRoute.js');
+const path = require("path");
 
-import { cors } from "./middlewares/CORS.js";
-import { logger } from './middlewares/logger.js';
-import { debugMW } from './middlewares/debugMW.js';
-import { usersAvatarsChecker } from "./middlewares/usersAvatarsChecker.js";
-
-import { usersProfileRoute } from './routes/usersProfileRoute.js';
-import path from "path";
 // const PORT = process.env.PORT ?? 3001;
 
 const PORT = 3001;
-const __dirname = path.resolve();
 const app = express();
 
 // app.use(logger);

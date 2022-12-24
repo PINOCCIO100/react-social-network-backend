@@ -1,8 +1,10 @@
-import { Router } from 'express';
+const { Router } = require('express');
 
-import { getUsersList, getUserProfile } from '../controllers/usersProfileController.js';
+const { getUsersList, getUserProfile } = require('../controllers/usersProfileController.js');
 
-export const usersProfileRoute = Router();
+usersProfileRoute = Router();
 
 usersProfileRoute.get('/', getUsersList);
 usersProfileRoute.get('/:userID', getUserProfile);
+
+exports.usersProfileRoute = usersProfileRoute;

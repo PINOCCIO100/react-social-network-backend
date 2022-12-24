@@ -1,10 +1,7 @@
-import { readFileSync } from 'fs';
-import path from 'path';
-// import usersProfileInfo from '../models/usersProfileInfo.json' assert {type: "json"};
+const { readFileSync } = require('fs');
+const path = require('path');
 
-const __dirname = path.resolve();
-export const debugMW = async (req, res, next) => {
-  const usersProfileInfo = JSON.parse(readFileSync(path.resolve(__dirname, 'models', 'usersProfileInfo.json')));
-  console.log(usersProfileInfo);
+exports.debugMW = async (req, res, next) => {
+  const usersProfileInfo = JSON.parse(readFileSync(path.resolve('models', 'usersProfileInfo.json')));
   next();
 }

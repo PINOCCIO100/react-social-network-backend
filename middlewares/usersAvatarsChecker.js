@@ -1,9 +1,6 @@
-import { existsSync } from "fs";
+const { existsSync } = require('fs');
 
-
-export const usersAvatarsChecker = (req, res) => {
-  imp
-  
+exports.usersAvatarsChecker = (req, res) => {
   if (!existsSync(req.originalUrl)) {
     console.log(req.originalUrl);
     res.send(undefined);

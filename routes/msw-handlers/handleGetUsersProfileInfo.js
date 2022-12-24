@@ -1,6 +1,6 @@
-import { rest } from "msw";
+// import { rest } from "msw";
 
-import usersProfileInfoJSON from '../db/usersProfileInfo.json';
+// import usersProfileInfoJSON from '../db/usersProfileInfo.json';
 
 export const handleGetUsersProfileInfo =
   [

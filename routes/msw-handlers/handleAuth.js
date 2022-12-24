@@ -1,5 +1,5 @@
-import { rest } from "msw";
-import usersData from '../db/usersData.json';
+// const { rest } from "msw";
+// const usersData from '../db/usersData.json';
 
 class StorageInfo {
 
