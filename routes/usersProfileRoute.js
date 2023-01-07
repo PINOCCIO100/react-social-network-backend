@@ -2,7 +2,7 @@ const { Router } = require('express');
 
 const { getUsersList, getUserProfile } = require('../controllers/usersProfileController.js');
 
-usersProfileRoute = Router();
+const usersProfileRoute = Router();
 
 usersProfileRoute.get('/', getUsersList);
 usersProfileRoute.get('/:userID', getUserProfile);

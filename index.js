@@ -2,9 +2,8 @@ const express = require('express');
 const { cors } = require('./middlewares/CORS.js');
 const { logger } = require('./middlewares/logger.js');
 const { debugMW } = require('./middlewares/debugMW.js');
-const { usersAvatarsChecker } = require("./middlewares/usersAvatarsChecker.js");
 const { usersProfileRoute } = require('./routes/usersProfileRoute.js');
-const path = require("path");
+const { usersAvatarsRoute } = require('./routes/usersAvatarsRoute.js');
 
 // const PORT = process.env.PORT ?? 3001;
 
@@ -20,13 +19,12 @@ app.use(express.json());
 
 app.use(express.urlencoded({ extended: true }));
 
-// app.get('//avatars/*', usersAvatarsChecker);
+app.use('/api/avatars/', usersAvatarsRoute);
+
 
 app.use(express.static('public'));
 
 app.use('/api/users/', usersProfileRoute);
-
-
 
 app.listen(PORT, async () => {
   console.log(`Server has been started on port ${PORT}...`);
