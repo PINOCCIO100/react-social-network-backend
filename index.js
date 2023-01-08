@@ -1,5 +1,7 @@
 const express = require('express');
-const { cors } = require('./middlewares/CORS.js');
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
+
 const { logger } = require('./middlewares/logger.js');
 const { debugMW } = require('./middlewares/debugMW.js');
 const { usersProfileRoute } = require('./routes/usersProfileRoute.js');
@@ -13,18 +15,27 @@ const app = express();
 // app.use(logger);
 // app.use(debugMW);
 
-app.use(cors);
+app.use(cors({ origin: 'http://localhost:3000' }));
 
+// for parsing application/json
 app.use(express.json());
 
+// for parsing application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/api/avatars/', usersAvatarsRoute);
+// for parsing cookies
+app.use(cookieParser());
 
+app.post('/api/auth', (req, res) => {
+  console.log(req.body); 
+  res.json(req.body)
+})
+
+app.use('/api/avatars', usersAvatarsRoute);
+
+app.use('/api/users', usersProfileRoute);
 
 app.use(express.static('public'));
-
-app.use('/api/users/', usersProfileRoute);
 
 app.listen(PORT, async () => {
   console.log(`Server has been started on port ${PORT}...`);
