@@ -6,6 +6,7 @@ const { logger } = require('./middlewares/logger.js');
 const { debugMW } = require('./middlewares/debugMW.js');
 const { usersProfileRoute } = require('./routes/usersProfileRoute.js');
 const { usersAvatarsRoute } = require('./routes/usersAvatarsRoute.js');
+const { authRouter } = require('./routes/authRoute.js');
 
 // const PORT = process.env.PORT ?? 3001;
 
@@ -26,10 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 // for parsing cookies
 app.use(cookieParser());
 
-app.post('/api/auth', (req, res) => {
-  console.log(req.body); 
-  res.json(req.body)
-})
+app.use('/api/auth', authRouter);
 
 app.use('/api/avatars', usersAvatarsRoute);
 
