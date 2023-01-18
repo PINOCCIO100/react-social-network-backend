@@ -1,20 +1,55 @@
-const { readFileSync } = require('fs');
-const path = require('path');
+const uuid = require('uuid');
+const bcrypt = require('bcrypt');
+const UserInfo = require('../models/UserInfo');
+const Session = require('../models/Session');
 
-const getAuthData = () => {
-  return JSON.parse(readFileSync(path.resolve('models', 'usersAuthData.json')));
+async function setSessionID(id) {
+  const sessionID = uuid.v4();
+  const session = await Session.findOne({ id: id });
+  if (session) {
+    session.session = sessionID;
+    session.save();
+  } else {
+    await Session.create({
+      id,
+      session: sessionID,
+    })
+  }
+  return sessionID
 }
 
-exports.authController = (req, res) => {
-  console.log(req.body);
-  const authData = getAuthData();
-  if (authData.some(user => (
-    user.email == req.body.email && user.password == req.body.password
-  ))) {
-    console.log(`User "${req.body.email}" logged`);
-    res.send(true);
+exports.authUser = async (req, res) => {
+  // console.log(bcrypt.hashSync('pass', 10));
+  const userData = req.body;
+  try {
+    const user = await UserInfo.findOne({ email: userData.email });
+    if (!user) {
+      console.log(`There no users with email "${userData.email}"`);
+      res.send(false);
+    } else if (!bcrypt.compareSync(userData.password, user.password)) {
+      // Проверка  захэшированного пароля
+      console.log(`Wrong password!`);
+      res.send(false);
+    } else {
+      res.cookie('session', await setSessionID(user.id), {
+        signed: true,
+        // maxAge: 90000
+      })
+      console.log(`${user.name} logged successfully`);
+      res.send(true);
+    }
+  } catch (e) {
+    console.log(e.message);
+  }
+}
+
+exports.authStatus = async (req, res) => {
+  const session = req.signedCookies.session;
+  if (!session) {
+    res.send(false)
+  } else if (await Session.findOne({ session: session }) == null) {
+    res.send(false);
   } else {
-    console.log(`User "${req.body.email}" refused`);
-    res.status(400).send(false);
+    res.send(true);
   }
 }

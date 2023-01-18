@@ -1,8 +1,8 @@
 const { Router } = require('express');
-const { getUsersAvatarsController } = require('../controllers/usersAvatarsController');
+const { getUsersAvatars } = require('../controllers/usersAvatarsController');
 
 const usersAvatarsRoute = Router();
 
-usersAvatarsRoute.get('/:userID', getUsersAvatarsController);
+usersAvatarsRoute.get('/:userID', getUsersAvatars);
 
 exports.usersAvatarsRoute = usersAvatarsRoute;

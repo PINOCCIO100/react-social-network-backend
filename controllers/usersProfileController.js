@@ -1,23 +1,14 @@
-const path = require('path');
-const { readFileSync } = require('fs');
+const UserInfo = require('../models/UserInfo');
 
-const getUsersProfileInfo = () => {
-  return JSON.parse(readFileSync(path.resolve('models', 'usersProfileInfo.json')));
-}
-
-exports.getUsersList = (req, res) => {
-  const usersProfileInfoParsed = getUsersProfileInfo();
-  const totalCount = usersProfileInfoParsed.length
+exports.getUsersList = async (req, res) => {
   const page = req.query.page;
   const count = req.query.count;
   res.json({
-    usersProfileInfo: usersProfileInfoParsed.slice(count * (page - 1), count * page),
-    totalCount
+    usersProfileInfo: await UserInfo.find().sort({ id: -1 }).skip((page - 1) * count).limit(count),
+    totalCount: await UserInfo.count(),
   });
 };
 
-exports.getUserProfile = (req, res) => {
-  const { userID } = req.params;
-  const usersProfileInfoParsed = getUsersProfileInfo();
-  res.json(usersProfileInfoParsed.find(p => p.id == userID));
+exports.getUserProfile = async (req, res) => {
+  res.json(await UserInfo.findOne({ id: req.params.userID }))
 }
