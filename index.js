@@ -7,6 +7,7 @@ const { logger } = require('./middlewares/logger.js');
 const { usersProfileRoute } = require('./routes/usersProfileRoute.js');
 const { usersAvatarsRoute } = require('./routes/usersAvatarsRoute.js');
 const { authRouter } = require('./routes/authRoute.js');
+const authCheckerMD = require('./middlewares/authCheckerMD.js');
 
 const MONGODB_SERVER_URL = 'mongodb://127.0.0.1:27017/MongoDB_for_React';
 
@@ -34,6 +35,9 @@ app.use(cookieParser('secret'));
 // app.use(logger);
 
 app.use('/api/auth', authRouter);
+
+//Проверка на авторизованность пользователя по кукам (корректный id сессии)
+app.use(authCheckerMD);
 
 app.use('/api/avatars', usersAvatarsRoute);
 
