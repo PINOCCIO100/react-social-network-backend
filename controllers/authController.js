@@ -3,63 +3,74 @@ const bcrypt = require('bcrypt');
 const UserInfo = require('../models/UserInfo');
 const Session = require('../models/Session');
 
-async function setSessionID(user) {
+//
+async function setSession(user) {
   // user - документ из коллекции usersInfo 
   const sessionID = uuid.v4();
-  const session = await Session.findOne({ id: user.id });
+  let session = await Session.findOne({ id: user.id });
   if (session) {
     session.session = sessionID;
     session.save();
   } else {
-
-    await Session.create({
+    session = await Session.create({
       id: user.id,
       email: user.email,
       name: user.name,
       session: sessionID,
     })
   }
-  return sessionID
+  return session
 }
 
-// Формируется статус аутентификации в зависимости от cookie и session в БД
-function createAuthStatus(sessionByCookie, sessionByBackend) {
-  const authStatus = {
+
+
+// Формируется статус аутентификации 
+function createAuthStatus(resultCode, userSession) {
+  authStatus = {
     message: [],
     data: {},
   }
-  if (!sessionByCookie || !sessionByBackend) {
-    authStatus.message.push('You are not authorized');
-    authStatus.resultCode = 1;
-  } else {
-    authStatus.data.id = sessionByBackend.id;
-    authStatus.data.email = sessionByBackend.email;
-    authStatus.data.name = sessionByBackend.name;
-    authStatus.resultCode = 0;
+  switch (resultCode) {
+    case 0:
+      authStatus.data.id = userSession.id;
+      authStatus.data.email = userSession.email;
+      authStatus.data.name = userSession.name;
+      authStatus.resultCode = 0;
+      break;
+    case 1:
+    default:
+      authStatus.message.push('You are not authorized');
+      authStatus.resultCode = 1;
+      break;
   }
+
   return authStatus
 }
 
 exports.authUser = async (req, res) => {
-  // console.log(bcrypt.hashSync('pass', 10));
   const userData = req.body;
   try {
     const user = await UserInfo.findOne({ email: userData.email });
+    const userSession = await setSession(user);
     if (!user) {
       // Проверка наличия пользователя с такой почтой
       console.log(`There no users with email "${userData.email}"`);
       res.send(false);
     } else if (!bcrypt.compareSync(userData.password, user.password)) {
       // Проверка  захэшированного пароля
+      const authStatus = createAuthStatus(1, userSession);
       console.log(`Wrong password!`);
-      res.send(false);
+      // res.send(false);
+      res.json(authStatus);
     } else {
-      res.cookie('session', await setSessionID(user), {
+      const authStatus = createAuthStatus(0, userSession);
+      res.cookie('session', userSession.session, {
         signed: true,
         // maxAge: 90000
       })
       console.log(`${user.name} logged successfully`);
-      res.send(true);
+      // res.send(true);
+      res.json(authStatus);
     }
   } catch (e) {
     console.log(e.message);
@@ -67,7 +78,9 @@ exports.authUser = async (req, res) => {
 }
 
 exports.authStatus = async (req, res) => {
-  const sessionByCookie = req?.signedCookies?.session;
-  const sessionByBackend = await Session.findOne({ session: sessionByCookie });
-  res.json(createAuthStatus(sessionByCookie, sessionByBackend));
+  const clientSessionID = req.signedCookies?.session;
+  const userSession = await Session.findOne({ session: clientSessionID });
+  !clientSessionID || !userSession ?
+    res.json(createAuthStatus(1, userSession)) :
+    res.json(createAuthStatus(0, userSession));
 }
