@@ -1,4 +1,5 @@
 const express = require('express');
+require('dotenv').config();
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
@@ -6,22 +7,28 @@ const mongoose = require('mongoose');
 const { logger } = require('./middlewares/logger.js');
 const { usersProfileRoute } = require('./routes/usersProfileRoute.js');
 const { usersAvatarsRoute } = require('./routes/usersAvatarsRoute.js');
-const { authRouter } = require('./routes/authRoute.js');
-const authCheckerMD = require('./middlewares/authCheckerMD.js');
+const { authRoute } = require('./routes/authRoute.js');
+const { followRoute } = require('./routes/followRoute.js');
+const authChecker = require('./middlewares/authChecker');
+const { messagesRoute } = require('./routes/messagesRoute.js');
 
-const MONGODB_SERVER_URL = 'mongodb://127.0.0.1:27017/MongoDB_for_React';
+const MONGODB_URL = `${process.env.MONGODB_SERVER}/${process.env.MONGODB_COLLECTION}`;
 
 mongoose.set("strictQuery", false);
-mongoose.connect('mongodb://127.0.0.1:27017/MongoDB_for_React', () => {
-  console.log(`Server connected to database ${MONGODB_SERVER_URL}...`);
-});
+mongoose.connect(MONGODB_URL, () => {
+  console.log(`Server connected to database ${MONGODB_URL}...`);
+},
+  (e) => {
+    console.log(`Error on connect to ${MONGODB_URL}`);
+    console.log(e.message);
+  }
+);
 
-// const PORT = process.env.PORT ?? 3001;
+const PORT = process.env.PORT || 3001;
 
-const PORT = 3001;
 const app = express();
 
-app.use(cors({ origin: 'http://localhost:3000', credentials: true, }));
+app.use(cors({ origin: process.env.REACT_HOST, credentials: true, }));
 
 // for parsing application/json
 app.use(express.json());
@@ -34,14 +41,18 @@ app.use(cookieParser('secret'));
 
 // app.use(logger);
 
-app.use('/api/auth', authRouter);
+app.use('/api/auth', authRoute);
 
 //Проверка на авторизованность пользователя по кукам (корректный id сессии)
-app.use(authCheckerMD);
+app.use(authChecker);
 
 app.use('/api/avatars', usersAvatarsRoute);
 
 app.use('/api/users', usersProfileRoute);
+
+app.use('/api/follow', followRoute);
+
+app.use('/api/messages', messagesRoute);
 
 app.use(express.static('public'));
 

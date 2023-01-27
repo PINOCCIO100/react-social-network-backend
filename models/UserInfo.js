@@ -14,7 +14,6 @@ const userSchema = new mongoose.Schema({
     name: String,
     catchPhrase: String,
   },
-  followed: [Number],
   password: String,
 }, { collection: "usersInfo" });
 

@@ -5,6 +5,7 @@ const { getUsersList, getUserProfile } = require('../controllers/usersProfileCon
 const usersProfileRoute = Router();
 
 usersProfileRoute.get('/', getUsersList);
+
 usersProfileRoute.get('/:userID', getUserProfile);
 
 exports.usersProfileRoute = usersProfileRoute;

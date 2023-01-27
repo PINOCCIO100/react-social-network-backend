@@ -1,10 +1,12 @@
 const mongoose = require("mongoose");
 
+// TODO: замутить expirationTime
+
 const sessionSchema = new mongoose.Schema({
-  id: { type: Number, unique: true, required: true },
-  email: { type: String, uniqe: true, required: true },
-  name: { type: String, uniqe: true, required: true },
   session: { type: String, unique: true, required: true },
+  id: { type: Number, unique: true, required: true },
+  email: { type: String, unique: true, required: true },
+  name: { type: String, required: true },
   expirationTime: Number,
 }, { collection: 'sessions' })
 
