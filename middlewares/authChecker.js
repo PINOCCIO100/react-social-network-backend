@@ -4,5 +4,10 @@ const { getUserSession } = require("../utility/authUtility");
 
 module.exports = async function (req, res, next) {
   const userSession = await getUserSession(req.signedCookies?.session);
-  userSession !== null ? next() : res.status(400).send(userSession.message);
+  if (userSession !== null) {
+    req.session = userSession;
+    next();
+  } else {
+    res.status(400).send(userSession.message);
+  }
 }
