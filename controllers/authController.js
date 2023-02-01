@@ -6,7 +6,6 @@ exports.authUser = async (req, res) => {
   const userData = req.body;
   try {
     const user = await UserInfo.findOne({ email: userData.email });
-    const userSession = await setUserSession(user);
     if (!user) {
       // Проверка наличия пользователя с такой почтой
       console.log(`There no users with email "${userData.email}"`);
@@ -17,6 +16,7 @@ exports.authUser = async (req, res) => {
       res.json(createAuthStatus(1));
     } else {
       console.log(`${user.name} logged successfully`);
+      const userSession = await setUserSession(user);
       res.cookie('session', userSession.session, { signed: true })
       res.json(createAuthStatus(0, userSession));
     }

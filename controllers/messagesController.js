@@ -1,9 +1,8 @@
 const Messages = require("../models/Messages");
-const { getUserSession } = require("../utility/authUtility");
 
 exports.getAllSendedMessages = async (req, res) => {
   try {
-    const senderID = (await getUserSession(req.signedCookies.session)).id
+    const senderID = req.session.id
     const messages = await Messages.find({ senderID })
     res.json(messages)
   } catch (e) {
@@ -14,7 +13,7 @@ exports.getAllSendedMessages = async (req, res) => {
 exports.getAddressedMessages = async (req, res) => {
   try {
     const { accepterID } = req.params;
-    const senderID = (await getUserSession(req.signedCookies.session)).id
+    const senderID = req.session.id
     const messages = await Messages.find({
       $or:
         [
@@ -30,7 +29,7 @@ exports.getAddressedMessages = async (req, res) => {
 
 exports.getUsersIDWithDialogs = async (req, res) => {
   try {
-    const senderID = (await getUserSession(req.signedCookies.session)).id
+    const senderID = req.session.id
     const usersID = await Messages.distinct('accepterID', { senderID });
     res.json(usersID)
   } catch (e) {

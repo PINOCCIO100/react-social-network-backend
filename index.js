@@ -1,16 +1,16 @@
 const express = require('express');
 require('dotenv').config();
+const mongoose = require('mongoose');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-const mongoose = require('mongoose');
 
 const { logger } = require('./middlewares/logger.js');
-const { usersProfileRoute } = require('./routes/usersProfileRoute.js');
-const { usersAvatarsRoute } = require('./routes/usersAvatarsRoute.js');
+const authChecker = require('./middlewares/authChecker');
 const { authRoute } = require('./routes/authRoute.js');
 const { followRoute } = require('./routes/followRoute.js');
-const authChecker = require('./middlewares/authChecker');
 const { messagesRoute } = require('./routes/messagesRoute.js');
+const { usersProfileRoute } = require('./routes/usersProfileRoute.js');
+const { usersAvatarsRoute } = require('./routes/usersAvatarsRoute.js');
 
 const MONGODB_URL = `${process.env.MONGODB_SERVER}/${process.env.MONGODB_COLLECTION}`;
 
@@ -37,7 +37,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // for parsing cookies
-app.use(cookieParser('secret'));
+app.use(cookieParser(process.env.SECRET));
 
 // app.use(logger);
 
