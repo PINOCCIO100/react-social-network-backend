@@ -11,6 +11,7 @@ const { followRoute } = require('./routes/followRoute.js');
 const { messagesRoute } = require('./routes/messagesRoute.js');
 const { usersProfileRoute } = require('./routes/usersProfileRoute.js');
 const { usersAvatarsRoute } = require('./routes/usersAvatarsRoute.js');
+const { postsRoute } = require('./routes/postsRoute.js');
 
 const MONGODB_URL = `${process.env.MONGODB_SERVER}/${process.env.MONGODB_COLLECTION}`;
 
@@ -39,7 +40,7 @@ app.use(express.urlencoded({ extended: true }));
 // for parsing cookies
 app.use(cookieParser(process.env.SECRET));
 
-// app.use(logger);
+app.use(logger);
 
 app.use('/api/auth', authRoute);
 
@@ -53,6 +54,8 @@ app.use('/api/users', usersProfileRoute);
 app.use('/api/follow', followRoute);
 
 app.use('/api/messages', messagesRoute);
+
+app.use('/api/posts', postsRoute)
 
 app.use(express.static('public'));
 
