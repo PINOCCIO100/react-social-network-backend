@@ -5,8 +5,8 @@ const postSchema = new mongoose.Schema({
   accepterID: { type: Number, required: true },
   post: { type: String, required: true },
   rating: {
-    likes: Number,
-    dislikes: Number,
+    likes: [Number],
+    dislikes: [Number],
   },
   postDate: Date
 }, { collection: 'posts' })

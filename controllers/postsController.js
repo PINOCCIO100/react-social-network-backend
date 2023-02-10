@@ -1,4 +1,5 @@
-const Posts = require("../models/Posts")
+const Posts = require("../models/Posts");
+const Rating = require("../models/Rating");
 
 
 exports.getAllMyPosts = async (req, res) => {
@@ -20,7 +21,6 @@ exports.getAllUserPosts = async (req, res) => {
 }
 
 exports.getAllMyPostedPosts = async (req, res) => {
-
 }
 
 exports.postPost = async (req, res) => {
@@ -49,3 +49,4 @@ exports.postPost = async (req, res) => {
     })
   }
 }
+
