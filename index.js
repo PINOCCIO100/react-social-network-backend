@@ -13,6 +13,7 @@ const { usersProfileRoute } = require('./routes/usersProfileRoute.js');
 const { usersAvatarsRoute } = require('./routes/usersAvatarsRoute.js');
 const { postsRoute } = require('./routes/postsRoute.js');
 const { ratingRoute } = require('./routes/ratingRoute.js');
+const { statusRoute } = require('./routes/statusRoute.js');
 
 const MONGODB_URL = `${process.env.MONGODB_SERVER}/${process.env.MONGODB_COLLECTION}`;
 
@@ -59,6 +60,8 @@ app.use('/api/messages', messagesRoute);
 app.use('/api/posts', postsRoute)
 
 app.use('/api/rate', ratingRoute)
+
+app.use('/api/status', statusRoute)
 
 app.use(express.static('public'));
 

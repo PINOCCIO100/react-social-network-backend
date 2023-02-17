@@ -23,7 +23,7 @@ exports.getUsersList = async (req, res) => {
 
 exports.getUserProfile = async (req, res) => {
   try {
-    res.json(await UserInfo.findOne({ id: req.params.userID }))
+    res.json(await UserInfo.findOne({ id: req.params.userID }, { __v: 0, _id: 0 }).populate('status'))
   } catch (e) {
     console.log(e.message);
     res.status(450).send(e.message);

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+require('../models/Status');
 
 const userSchema = new mongoose.Schema({
   id: { type: Number, unique: true, required: true },
@@ -15,6 +16,10 @@ const userSchema = new mongoose.Schema({
     catchPhrase: String,
   },
   password: String,
+  status: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Status'
+  },
 }, { collection: "usersInfo" });
 
 

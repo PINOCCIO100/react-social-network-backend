@@ -2,6 +2,8 @@ const bcrypt = require('bcrypt');
 const UserInfo = require('../models/UserInfo');
 const { getUserSession, setUserSession, createAuthStatus } = require('../utility/authUtility');
 
+//TODO: Нужно реализовать удаление сессий по истечению времени
+
 exports.authUser = async (req, res) => {
   const userData = req.body;
   try {
