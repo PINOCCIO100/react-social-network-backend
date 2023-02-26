@@ -5,8 +5,6 @@ const statusRoute = Router();
 
 statusRoute.get('/:userID', getUserStatus);
 
-statusRoute.post('/:userID', createUserStatus);
-
-statusRoute.delete('/:userID', deleteUserStatus);
+statusRoute.post('/', createUserStatus);
 
 exports.statusRoute = statusRoute;

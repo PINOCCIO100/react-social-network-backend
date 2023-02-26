@@ -31,7 +31,16 @@ const PORT = process.env.PORT || 3001;
 
 const app = express();
 
-app.use(cors({ origin: process.env.REACT_HOST, credentials: true, }));
+const whitelist = new Set([process.env.REACT_LOCAL_HOST, process.env.REACT_LAN_HOST]);
+
+app.use(cors({
+  origin: function (origin, cb) {
+    whitelist.has(origin) || !origin ? // Security issue? 
+      cb(null, true) :
+      cb(new Error('Not allowed by CORS'))
+  },
+  credentials: true,
+}));
 
 // for parsing application/json
 app.use(express.json());
@@ -42,7 +51,7 @@ app.use(express.urlencoded({ extended: true }));
 // for parsing cookies
 app.use(cookieParser(process.env.SECRET));
 
-// app.use(logger);
+// app.use(logger); // Для отображения в консоли входящих  запросов
 
 app.use('/api/auth', authRoute);
 
